@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Training Work List</title>
+<style>
+  :root{
+    --ink:#111827;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --bg:#f3f4f6;
+    --card:#ffffff;
+    --primary:#2563eb;
+    --primary-deep:#1d4ed8;
+    --danger:#dc2626;
+    --danger-deep:#b91c1c;
+    --ok:#059669;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    padding:24px 16px 60px;
+  }
+
+  .wrap{ max-width:960px; margin:0 auto; }
+
+  h1{
+    font-size:24px;
+    margin:0 0 4px;
+  }
+  .subtitle{
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:24px;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:20px;
+  }
+  .card h2{
+    font-size:15px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--primary);
+    margin:0 0 16px;
+  }
+
+  form{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:14px;
+  }
+  .field{ display:flex; flex-direction:column; }
+  .field.full{ grid-column:1 / -1; }
+
+  label{
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:5px;
+  }
+  input, select{
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-size:14px;
+    background:#fff;
+    color:var(--ink);
+  }
+  input:focus, select:focus{
+    outline:none;
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,0.12);
+  }
+
+  .form-actions{
+    grid-column:1 / -1;
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:4px;
+  }
+
+  button{
+    border:none;
+    border-radius:8px;
+    padding:10px 18px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .btn-primary{ background:var(--primary); color:white; }
+  .btn-primary:hover{ background:var(--primary-deep); }
+  .btn-secondary{ background:#e5e7eb; color:var(--ink); }
+  .btn-secondary:hover{ background:#d1d5db; }
+
+  .toolbar{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .toolbar input{ flex:1; min-width:200px; }
+  .count{ font-size:12px; color:var(--muted); white-space:nowrap; }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  th{
+    text-align:left;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--muted);
+    border-bottom:1px solid var(--line);
+    padding:10px 8px;
+  }
+  td{
+    padding:12px 8px;
+    border-bottom:1px solid var(--line);
+    vertical-align:middle;
+  }
+  tr:last-child td{ border-bottom:none; }
+
+  .badge{
+    display:inline-block;
+    padding:3px 10px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:600;
+    background:#eef2ff;
+    color:var(--primary);
+  }
+
+  .row-actions{ display:flex; gap:8px; }
+  .row-actions button{
+    padding:6px 12px;
+    font-size:12px;
+  }
+  .btn-edit{ background:#fef3c7; color:#92400e; }
+  .btn-edit:hover{ background:#fde68a; }
+  .btn-delete{ background:#fee2e2; color:var(--danger-deep); }
+  .btn-delete:hover{ background:#fecaca; }
+
+  .empty{
+    text-align:center;
+    color:var(--muted);
+    padding:30px 10px;
+    font-size:14px;
+  }
+
+  @media (max-width:600px){
+    form{ grid-template-columns:1fr; }
+    table, thead, tbody, th, td, tr{ display:block; }
+    thead{ display:none; }
+    tr{
+      border-bottom:1px solid var(--line);
+      padding:10px 0;
+    }
+    td{
+      border:none;
+      padding:4px 0;
+    }
+    td::before{
+      content:attr(data-label);
+      display:block;
+      font-size:10px;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:2px;
+    }
+    .row-actions{ margin-top:6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>Staff Training Work List</h1>
+  <div class="subtitle">Add, edit, and manage staff records for training tracking.</div>
+
+  <div class="card">
+    <h2 id="formTitle">Add Staff</h2>
+    <form id="staffForm">
+      <div class="field">
+        <label for="staffId">ID Staff</label>
+        <input type="text" id="staffId" placeholder="e.g. ST-001" required>
+      </div>
+      <div class="field">
+        <label for="staffName">Staff Name</label>
+        <input type="text" id="staffName" placeholder="e.g. Sok Dara" required>
+      </div>
+      <div class="field">
+        <label for="position">Position</label>
+        <input type="text" id="position" placeholder="e.g. Sales Trainer" required>
+      </div>
+      <div class="field">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" required>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" id="cancelBtn" style="display:none;">Cancel</button>
+        <button type="submit" class="btn-primary" id="submitBtn">Add Staff</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Staff List</h2>
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="Search by name, ID, or position...">
+      <span class="count" id="count">0 staff</span>
+    </div>
+    <table id="staffTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>ID Staff</th>
+          <th>Staff Name</th>
+          <th>Position</th>
+          <th>Date of Birth</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty" id="emptyMsg">No staff added yet.</div>
+  </div>
+</div>
+
+<script>
+  let staffList = [];
+  let editingId = null;
+
+  const form = document.getElementById('staffForm');
+  const staffIdInput = document.getElementById('staffId');
+  const staffNameInput = document.getElementById('staffName');
+  const positionInput = document.getElementById('position');
+  const dobInput = document.getElementById('dob');
+  const submitBtn = document.getElementById('submitBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const formTitle = document.getElementById('formTitle');
+
+  const tbody = document.getElementById('tbody');
+  const table = document.getElementById('staffTable');
+  const emptyMsg = document.getElementById('emptyMsg');
+  const countEl = document.getElementById('count');
+  const searchEl = document.getElementById('search');
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const staffId = staffIdInput.value.trim();
+    const staffName = staffNameInput.value.trim();
+    const position = positionInput.value.trim();
+    const dob = dobInput.value;
+
+    if (editingId !== null) {
+      // Update existing staff
+      const staff = staffList.find(s => s.uid === editingId);
+      if (staff) {
+        staff.staffId = staffId;
+        staff.staffName = staffName;
+        staff.position = position;
+        staff.dob = dob;
+      }
+      exitEditMode();
+    } else {
+      // Add new staff
+      staffList.unshift({
+        uid: Date.now(),
+        staffId,
+        staffName,
+        position,
+        dob
+      });
+    }
+
+    form.reset();
+    render();
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    exitEditMode();
+    form.reset();
+  });
+
+  function exitEditMode(){
+    editingId = null;
+    formTitle.textContent = 'Add Staff';
+    submitBtn.textContent = 'Add Staff';
+    cancelBtn.style.display = 'none';
+  }
+
+  function startEdit(uid){
+    const staff = staffList.find(s => s.uid === uid);
+    if (!staff) return;
+    editingId = uid;
+    staffIdInput.value = staff.staffId;
+    staffNameInput.value = staff.staffName;
+    positionInput.value = staff.position;
+    dobInput.value = staff.dob;
+    formTitle.textContent = 'Edit Staff';
+    submitBtn.textContent = 'Update Staff';
+    cancelBtn.style.display = 'inline-block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function deleteStaff(uid){
+    if (!confirm('Delete this staff member?')) return;
+    staffList = staffList.filter(s => s.uid !== uid);
+    if (editingId === uid) {
+      exitEditMode();
+      form.reset();
+    }
+    render();
+  }
+
+  searchEl.addEventListener('input', render);
+
+  function formatDate(dateStr){
+    if (!dateStr) return '—';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  }
+
+  function render(){
+    const q = searchEl.value.trim().toLowerCase();
+    const filtered = staffList.filter(s =>
+      !q ||
+      s.staffName.toLowerCase().includes(q) ||
+      s.staffId.toLowerCase().includes(q) ||
+      s.position.toLowerCase().includes(q)
+    );
+
+    tbody.innerHTML = '';
+    filtered.forEach(s => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td data-label="ID Staff"><span class="badge">${s.staffId}</span></td>
+        <td data-label="Staff Name">${s.staffName}</td>
+        <td data-label="Position">${s.position}</td>
+        <td data-label="Date of Birth">${formatDate(s.dob)}</td>
+        <td data-label="">
+          <div class="row-actions">
+            <button class="btn-edit" data-uid="${s.uid}" data-action="edit">Edit</button>
+            <button class="btn-delete" data-uid="${s.uid}" data-action="delete">Delete</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('button').forEach(btn => {
+      const uid = Number(btn.getAttribute('data-uid'));
+      const action = btn.getAttribute('data-action');
+      btn.addEventListener('click', () => {
+        if (action === 'edit') startEdit(uid);
+        if (action === 'delete') deleteStaff(uid);
+      });
+    });
+
+    countEl.textContent = staffList.length + (staffList.length === 1 ? ' staff' : ' staff');
+    table.style.display = filtered.length ? 'table' : 'none';
+    emptyMsg.style.display = filtered.length ? 'none' : 'block';
+    emptyMsg.textContent = staffList.length && !filtered.length
+      ? 'No matches for your search.'
+      : 'No staff added yet.';
+  }
+
+  render();
+</script>
+
+</body>
+</html>
